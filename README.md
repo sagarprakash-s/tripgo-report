@@ -1,10 +1,10 @@
 # Bus Booking System
 
-A full-stack web application for booking bus tickets built with Spring Boot (backend) and React (frontend).
+A full-stack web application for booking bus tickets built with Java (backend) and React (frontend).
 
 ## Features
 
-### Backend (Spring Boot)
+### Backend (Java)
 - RESTful API for booking management
 - MongoDB integration for data persistence
 - CRUD operations for bookings
@@ -14,19 +14,19 @@ A full-stack web application for booking bus tickets built with Spring Boot (bac
 
 ### Frontend (React)
 - Modern, responsive UI with gradient design
-- Booking form with validation
+- Simplified booking form with validation
 - Real-time booking list with search functionality
 - Delete/cancel booking functionality
-- Price calculation
+- Price calculation based on number of seats
 - Mobile-friendly design
 
 ## Technology Stack
 
 ### Backend
-- Node.js
-- Express.js
-- Mongoose (MongoDB ODM)
-- CORS
+- Java 17
+- Spring Boot 3.1.5
+- Spring Data MongoDB
+- Maven
 
 ### Frontend
 - React 18
@@ -41,14 +41,24 @@ A full-stack web application for booking bus tickets built with Spring Boot (bac
 ```
 demo/
 ├── backend/
-│   ├── models/         # MongoDB models
-│   ├── routes/         # API routes
-│   ├── server.js       # Main server file
-│   ├── package.json
-│   └── .env           # Environment variables
+│   ├── src/main/java/com/busbooking/
+│   │   ├── controller/     # REST controllers
+│   │   ├── model/          # Entity models
+│   │   ├── repository/     # Data repositories
+│   │   ├── service/        # Business logic
+│   │   └── BusBookingApplication.java
+│   ├── src/main/resources/
+│   │   └── application.properties
+│   ├── pom.xml            # Maven dependencies
+│   └── SimpleServer.java  # Standalone server option
 ├── frontend/
 │   ├── src/
-│   │   ├── components/ # React components
+│   │   ├── components/    # React components
+│   │   │   ├── BookingForm.js
+│   │   │   ├── BookingsList.js
+│   │   │   ├── BookingSearch.js
+│   │   │   ├── Login.js
+│   │   │   └── Signup.js
 │   │   ├── App.js
 │   │   └── App.css
 │   └── package.json
@@ -58,28 +68,29 @@ demo/
 ## Setup Instructions
 
 ### Prerequisites
-- Node.js 14 or higher
+- Java 17 or higher
+- Maven 3.6+ (or use included wrapper)
 - MongoDB Atlas account (or local MongoDB)
-- npm or yarn
+- Node.js 14+ and npm
 
 ### Backend Setup
 1. Navigate to the backend directory:
    ```bash
    cd backend
    ```
-2. Install dependencies:
+2. Configure MongoDB connection in `src/main/resources/application.properties`:
+   ```
+   spring.data.mongodb.uri=mongodb+srv://username:password@cluster.mongodb.net/busbooking
+   ```
+3. Start the server:
    ```bash
-   npm install
+   mvn spring-boot:run
    ```
-3. Configure MongoDB connection in `.env` file:
-   ```
-   MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/busbooking
-   ```
-4. Start the server:
+   Or use the simple standalone server:
    ```bash
-   npm start
+   javac SimpleServer.java && java SimpleServer
    ```
-5. The backend will start on `http://localhost:8080`
+4. The backend will start on `http://localhost:8080`
 
 ### Frontend Setup
 1. Navigate to the frontend directory:
@@ -132,7 +143,7 @@ demo/
 - Passenger name, phone, and email validation
 - Dropdown selection for departure and destination cities
 - Date picker with minimum date validation
-- Seat selection (1-10 seats)
+- Number of seats input (1-10 seats)
 - Real-time price calculation (₹500 per seat)
 
 ### Booking Management
@@ -156,7 +167,7 @@ demo/
 2. No backend changes required
 
 ### Customizing Price
-- Modify the `BASE_PRICE` constant in `BookingService.java`
+- Modify the price calculation in the backend service
 - Update the `calculatePrice` function in `BookingForm.js`
 
 ## Troubleshooting
@@ -167,7 +178,7 @@ demo/
 3. **Port Conflicts**: Backend runs on 8080, frontend on 3000
 
 ### Logs
-- Backend logs: Check console output when running `mvn spring-boot:run`
+- Backend logs: Check console output when running the Java application
 - Frontend logs: Check browser console for any JavaScript errors
 
 ## Contributing

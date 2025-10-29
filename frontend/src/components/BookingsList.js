@@ -78,7 +78,7 @@ function BookingsList({ refreshTrigger }) {
                                     Travel Date: {new Date(booking.travelDate).toLocaleDateString()}
                                 </div>
                                 <div className="booking-info">
-                                    <span>Seats: {booking.selectedSeats?.length > 0 ? booking.selectedSeats.join(', ') : booking.numberOfSeats || 1}</span>
+                                    <span>Seats: {booking.numberOfSeats || 1}</span>
                                     <span>Price: ₹{booking.totalPrice || 500}</span>
                                 </div>
                                 {booking.phoneNumber && (
