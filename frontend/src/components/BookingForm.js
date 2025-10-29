@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import SeatSelection from "./SeatSelection";
 
 function BookingForm({ onBookingAdded }) {
     const [form, setForm] = useState({
@@ -8,20 +9,33 @@ function BookingForm({ onBookingAdded }) {
         destination: "",
         travelDate: "",
         phoneNumber: "",
-        email: "",
-        numberOfSeats: 1
+        email: ""
     });
+    const [selectedSeats, setSelectedSeats] = useState([]);
+    const [showSeatSelection, setShowSeatSelection] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
     const handleChange = e => {
-        const value = e.target.type === 'number' ? parseInt(e.target.value) : e.target.value;
-        setForm({ ...form, [e.target.name]: value });
+        setForm({ ...form, [e.target.name]: e.target.value });
     };
 
-    const calculatePrice = (seats) => {
+    const calculatePrice = (seatCount) => {
         const basePrice = 500;
-        return seats * basePrice;
+        return seatCount * basePrice;
+    };
+
+    const handleSeatSelect = (seats) => {
+        setSelectedSeats(seats);
+    };
+
+    const handleProceedToSeatSelection = () => {
+        if (!form.departure || !form.destination || !form.travelDate) {
+            setError("Please fill in departure, destination, and travel date first.");
+            return;
+        }
+        setShowSeatSelection(true);
+        setError("");
     };
 
     const handleSubmit = async e => {
@@ -29,14 +43,22 @@ function BookingForm({ onBookingAdded }) {
         setLoading(true);
         setError("");
         
+        if (selectedSeats.length === 0) {
+            setError("Please select at least one seat.");
+            setLoading(false);
+            return;
+        }
+        
         try {
             const bookingData = {
                 ...form,
-                totalPrice: calculatePrice(form.numberOfSeats)
+                selectedSeats: selectedSeats,
+                numberOfSeats: selectedSeats.length,
+                totalPrice: calculatePrice(selectedSeats.length)
             };
             
             await axios.post("http://localhost:8080/api/bookings", bookingData);
-            alert(`Booking confirmed! ${form.numberOfSeats} seat(s) - Total Price: ₹${bookingData.totalPrice}`);
+            alert(`Booking confirmed! Seats: ${selectedSeats.join(', ')} - Total Price: ₹${bookingData.totalPrice}`);
             
             setForm({
                 passengerName: "",
@@ -44,9 +66,10 @@ function BookingForm({ onBookingAdded }) {
                 destination: "",
                 travelDate: "",
                 phoneNumber: "",
-                email: "",
-                numberOfSeats: 1
+                email: ""
             });
+            setSelectedSeats([]);
+            setShowSeatSelection(false);
             
             if (onBookingAdded) onBookingAdded();
         } catch (error) {
@@ -86,16 +109,6 @@ function BookingForm({ onBookingAdded }) {
                         onChange={handleChange} 
                         required 
                     />
-                    <input 
-                        name="numberOfSeats" 
-                        type="number"
-                        min="1"
-                        max="10"
-                        placeholder="Number of Seats" 
-                        value={form.numberOfSeats}
-                        onChange={handleChange} 
-                        required 
-                    />
                 </div>
                 <div className="form-row">
                     <select name="departure" value={form.departure} onChange={handleChange} required>
@@ -126,13 +139,30 @@ function BookingForm({ onBookingAdded }) {
                         onChange={handleChange} 
                         required 
                     />
+                    <button 
+                        type="button" 
+                        className="seat-select-btn"
+                        onClick={handleProceedToSeatSelection}
+                        disabled={!form.departure || !form.destination || !form.travelDate}
+                    >
+                        Select Seats
+                    </button>
                 </div>
                 
-                <div className="price-display">
-                    Total Price: ₹{calculatePrice(form.numberOfSeats)}
-                </div>
+                {showSeatSelection && (
+                    <SeatSelection 
+                        onSeatSelect={handleSeatSelect}
+                        selectedSeats={selectedSeats}
+                    />
+                )}
                 
-                <button type="submit" disabled={loading}>
+                {selectedSeats.length > 0 && (
+                    <div className="price-display">
+                        Selected Seats: {selectedSeats.join(', ')} | Total Price: ₹{calculatePrice(selectedSeats.length)}
+                    </div>
+                )}
+                
+                <button type="submit" disabled={loading || selectedSeats.length === 0}>
                     {loading ? "Booking..." : "Confirm Booking"}
                 </button>
             </form>

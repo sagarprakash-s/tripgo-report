@@ -43,7 +43,7 @@ function App() {
             <header className="app-header">
                 <div className="header-content">
                     <div className="header-info">
-                        <h1>🚌 Bus Booking System</h1>
+                        <h1>Bus Booking System</h1>
                         <p>Welcome back, {user.fullName}!</p>
                     </div>
                     <div className="user-info">
