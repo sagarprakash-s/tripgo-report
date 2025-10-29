@@ -33,7 +33,7 @@ function Login({ onLogin, switchToSignup }) {
     <div className="auth-container">
       <div className="auth-form">
         <div className="auth-header">
-          <h2>🚌 Login to Bus Booking</h2>
+          <h2>Login to Bus Booking</h2>
           <p>Welcome back! Please login to your account</p>
         </div>
         

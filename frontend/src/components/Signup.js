@@ -60,7 +60,7 @@ function Signup({ switchToLogin }) {
     <div className="auth-container">
       <div className="auth-form signup-form">
         <div className="auth-header">
-          <h2>🚌 Create Bus Booking Account</h2>
+          <h2>Create Bus Booking Account</h2>
           <p>Join us and start booking your bus tickets easily</p>
         </div>
         
